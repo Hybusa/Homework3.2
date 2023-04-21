@@ -1,4 +1,3 @@
-
 package ru.hogwarts.school.service;
 
 import org.junit.jupiter.api.Test;
@@ -77,7 +76,7 @@ class FacultyServiceTest {
 
         assertNull(this.facultyService.editFaculty(testFaculty));
 
-        verify(facultyRepository,never()).save(Mockito.any(Faculty.class));
+        verify(facultyRepository, never()).save(Mockito.any(Faculty.class));
         verify(facultyRepository).existsById(Mockito.any());
     }
 
@@ -89,7 +88,7 @@ class FacultyServiceTest {
         expectedFaculty.setId(2L);
         expectedFaculty.setColor("Green");
         expectedFaculty.setName("Slytherin");
-        when(facultyRepository.findAll()).thenReturn(List.of(faculty,expectedFaculty));
+        when(facultyRepository.findAll()).thenReturn(List.of(faculty, expectedFaculty));
         when(facultyRepository.existsById(any())).thenReturn(true);
         when(facultyRepository.save(any())).thenReturn(expectedFaculty);
 
@@ -137,7 +136,7 @@ class FacultyServiceTest {
 
         List<Faculty> expectedCollection = List.of(faculty, faculty1, faculty2);
         when(facultyRepository.findAll()).thenReturn(expectedCollection);
-        List<Faculty> actualCollection = facultyService.getAll();
+        Collection<Faculty> actualCollection = facultyService.getAll();
 
 
         assertEquals(expectedCollection.size(), actualCollection.size());
@@ -159,7 +158,7 @@ class FacultyServiceTest {
         String colorUnderTest = "Blue";
 
         Collection<Faculty> expectedCollection = List.of(faculty1, faculty3);
-        when(facultyRepository.findAll()).thenReturn(List.of(faculty,faculty1,faculty2,faculty3));
+        when(facultyRepository.findAll()).thenReturn(List.of(faculty, faculty1, faculty2, faculty3));
         Collection<Faculty> actualCollection = this.facultyService.getFilteredByColor(colorUnderTest);
 
         assertEquals(expectedCollection.size(), actualCollection.size());

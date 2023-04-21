@@ -74,7 +74,7 @@ class StudentServiceTest {
 
         assertNull(this.studentService.editStudent(testStudent));
 
-        verify(studentRepository,never()).save(Mockito.any(Student.class));
+        verify(studentRepository, never()).save(Mockito.any(Student.class));
         verify(studentRepository).existsById(Mockito.any());
     }
 
@@ -86,7 +86,7 @@ class StudentServiceTest {
         expectedStudent.setId(2L);
         expectedStudent.setAge(15);
         expectedStudent.setName("Draco");
-        when(studentRepository.findAll()).thenReturn(List.of(student,expectedStudent));
+        when(studentRepository.findAll()).thenReturn(List.of(student, expectedStudent));
         when(studentRepository.existsById(any())).thenReturn(true);
         when(studentRepository.save(any())).thenReturn(expectedStudent);
 
@@ -94,6 +94,28 @@ class StudentServiceTest {
         assertTrue(this.studentService.getAll().contains(expectedStudent));
         verify(studentRepository).existsById(any());
         verify(studentRepository).save(any());
+    }
+
+    /**
+     * Method under test: {@link StudentService#getAllByAgeBetween(int, int)}
+     */
+    @Test
+    void testFindByAgeBetween() {
+        Student student = new Student("Harry", 13);
+        Student student1 = new Student("Hermione", 15);
+        Student student2 = new Student("Ron", 14);
+        Student student3 = new Student("Draco", 15);
+        Student student4 = new Student("Cedric", 17);
+        int min = 14;
+        int max = 16;
+
+        Collection<Student> expectedCollection = List.of(student2,student1,student3);
+        when(studentRepository.findAllByAgeBetween(min,max)).thenReturn(List.of(student2,student1,student3));
+        Collection<Student> actualCollection = this.studentService.getAllByAgeBetween(min, max);
+
+        assertEquals(expectedCollection.size(), actualCollection.size());
+        assertTrue(expectedCollection.containsAll(actualCollection));
+        verify(studentRepository).findAllByAgeBetween(min,max);
     }
 
     /**
@@ -130,7 +152,7 @@ class StudentServiceTest {
 
         List<Student> expectedCollection = List.of(student, student1, student2);
         when(studentRepository.findAll()).thenReturn(expectedCollection);
-        List<Student> actualCollection = studentService.getAll();
+        Collection<Student> actualCollection = studentService.getAll();
 
 
         assertEquals(expectedCollection.size(), actualCollection.size());
@@ -140,7 +162,7 @@ class StudentServiceTest {
     }
 
     /**
-     * Method under test: {@link StudentService#getFilteredByAge(int)}
+     * Method under test: {@link StudentService#getAllByAge(int)}
      */
     @Test
     void getFilteredByAge_CorrectParam_ReturnsCorrectCollection() {
@@ -151,11 +173,12 @@ class StudentServiceTest {
         int ageUnderTest = 15;
 
         Collection<Student> expectedCollection = List.of(student1, student3);
-        when(studentRepository.findAll()).thenReturn(List.of(student,student1,student2,student3));
-        Collection<Student> actualCollection = this.studentService.getFilteredByAge(ageUnderTest);
+        when(studentRepository.findAllByAge(ageUnderTest)).thenReturn(List.of(student1, student3));
+        Collection<Student> actualCollection = this.studentService.getAllByAge(ageUnderTest);
 
         assertEquals(expectedCollection.size(), actualCollection.size());
         assertTrue(expectedCollection.containsAll(actualCollection));
+        verify(studentRepository).findAllByAge(ageUnderTest);
     }
 }
 

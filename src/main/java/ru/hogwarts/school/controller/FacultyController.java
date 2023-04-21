@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
@@ -27,6 +28,14 @@ public class FacultyController {
 
     }
 
+    @GetMapping("{id}/students")
+    public ResponseEntity<Collection<Student>> getFacultyStudents(@PathVariable Long id){
+        Collection<Student> tmp = facultyService.getStudentsFromFaculty(id);
+        if(tmp == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(tmp);
+    }
+
     @GetMapping
     public ResponseEntity<Collection<Faculty>> getAllFaculties() {
         return ResponseEntity.ok(facultyService.getAll());
@@ -35,6 +44,16 @@ public class FacultyController {
     @GetMapping("filter/{color}")
     public ResponseEntity<Collection<Faculty>> getAllFilteredByAge(@PathVariable String color) {
         return ResponseEntity.ok(facultyService.getFilteredByColor(color));
+    }
+
+    @GetMapping("filter")
+    public ResponseEntity<Collection<Faculty>> getAllFaculties(@RequestParam(required = false) String name,
+                                                              @RequestParam(required = false) String color){
+        if(name != null && !name.isBlank())
+            return ResponseEntity.ok(facultyService.getByName(name));
+        if(color != null && !color.isBlank())
+            return ResponseEntity.ok(facultyService.getByColor(color));
+        return ResponseEntity.ok(facultyService.getAll());
     }
 
     @PostMapping
