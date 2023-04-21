@@ -7,7 +7,6 @@ import ru.hogwarts.school.repositories.FacultyRepository;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
@@ -40,10 +39,6 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public Collection<Faculty> getFilteredByColor(String color) {
-        return facultyRepository.findAll().stream()
-                .filter(f -> f.getColor().equals(color)).collect(Collectors.toList());
-    }
 
     public Collection<Faculty> getByName(String name) {
         return facultyRepository.findAllByNameContainsIgnoreCase(name);

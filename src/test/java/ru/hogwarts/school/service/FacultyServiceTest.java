@@ -146,20 +146,21 @@ class FacultyServiceTest {
     }
 
     /**
-     * Method under test: {@link FacultyService#getFilteredByColor(String)}
+     * Method under test: {@link FacultyService#getByColor(String)}
      */
 
     @Test
     void getFilteredByColor_CorrectParam_ReturnsCorrectCollection() {
-        Faculty faculty = new Faculty("Gryffindor", "Red");
+//        Faculty faculty = new Faculty("Gryffindor", "Red");
         Faculty faculty1 = new Faculty("Ravenclaw", "Blue");
-        Faculty faculty2 = new Faculty("Slytherin", "Green");
+//        Faculty faculty2 = new Faculty("Slytherin", "Green");
         Faculty faculty3 = new Faculty("Ravenclaw", "Blue");
         String colorUnderTest = "Blue";
 
         Collection<Faculty> expectedCollection = List.of(faculty1, faculty3);
-        when(facultyRepository.findAll()).thenReturn(List.of(faculty, faculty1, faculty2, faculty3));
-        Collection<Faculty> actualCollection = this.facultyService.getFilteredByColor(colorUnderTest);
+        when(facultyRepository.findAllByColorContainsIgnoreCase(colorUnderTest))
+                .thenReturn(List.of(faculty1, faculty3));
+        Collection<Faculty> actualCollection = this.facultyService.getByColor(colorUnderTest);
 
         assertEquals(expectedCollection.size(), actualCollection.size());
         assertTrue(expectedCollection.containsAll(actualCollection));

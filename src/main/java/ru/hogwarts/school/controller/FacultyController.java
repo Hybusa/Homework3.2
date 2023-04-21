@@ -41,11 +41,6 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAll());
     }
 
-    @GetMapping("filter/{color}")
-    public ResponseEntity<Collection<Faculty>> getAllFilteredByAge(@PathVariable String color) {
-        return ResponseEntity.ok(facultyService.getFilteredByColor(color));
-    }
-
     @GetMapping("filter")
     public ResponseEntity<Collection<Faculty>> getAllFaculties(@RequestParam(required = false) String name,
                                                               @RequestParam(required = false) String color){
