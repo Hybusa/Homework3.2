@@ -49,8 +49,7 @@ public class FacultyService {
     }
 
     public Collection<Student> getStudentsFromFaculty(Long id) {
-        Optional<Faculty> tmp = facultyRepository.findById(id);
-        return tmp.map(Faculty::getStudents).orElse(null);
+        return facultyRepository.findById(id).map(Faculty::getStudents).orElseThrow(RuntimeException::new);
     }
 
 }

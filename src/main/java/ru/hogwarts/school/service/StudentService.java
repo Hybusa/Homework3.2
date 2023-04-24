@@ -50,8 +50,6 @@ public class StudentService {
     }
 
     public Faculty getFaculty(Long id) {
-        Optional<Student> tmp = studentRepository.findById(id);
-
-        return tmp.map(Student::getFaculty).orElse(null);
+        return studentRepository.findById(id).map(Student::getFaculty).orElseThrow(RuntimeException::new);
     }
 }

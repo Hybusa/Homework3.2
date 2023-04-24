@@ -105,8 +105,7 @@ class FacultyServiceTest {
 
 
     @Test
-    void deleteFaculty_IncorrectParams_ReturnsNull() {
-
+    void deleteFaculty_IncorrectParams() {
         Long idUnderTest = 3L;
 
         facultyService.deleteFaculty(idUnderTest);

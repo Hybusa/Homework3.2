@@ -14,7 +14,7 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "faculty")
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     @JsonIgnore
     private Collection<Student> students;
 
@@ -41,6 +41,10 @@ public class Faculty {
 
     public String getName() {
         return name;
+    }
+
+    public void setStudents(Collection<Student> students) {
+        this.students = students;
     }
 
     public void setName(String name) {

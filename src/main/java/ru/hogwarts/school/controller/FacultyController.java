@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -8,7 +7,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
@@ -22,18 +20,14 @@ public class FacultyController {
 
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
-        Optional<Faculty> tmp = facultyService.findFaculty(id);
-        return tmp.map(ResponseEntity::ok)
+        return facultyService.findFaculty(id).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 
     @GetMapping("{id}/students")
     public ResponseEntity<Collection<Student>> getFacultyStudents(@PathVariable Long id){
-        Collection<Student> tmp = facultyService.getStudentsFromFaculty(id);
-        if(tmp == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(tmp);
+        return ResponseEntity.ok(facultyService.getStudentsFromFaculty(id));
     }
 
     @GetMapping
@@ -57,11 +51,8 @@ public class FacultyController {
     }
 
     @PutMapping
-    public ResponseEntity<Faculty> editBook(@RequestBody Faculty faculty) {
-        Faculty tmp = facultyService.editFaculty(faculty);
-        if (tmp == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        return ResponseEntity.ok(tmp);
+    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok(facultyService.editFaculty(faculty));
     }
 
     @DeleteMapping("{id}")
