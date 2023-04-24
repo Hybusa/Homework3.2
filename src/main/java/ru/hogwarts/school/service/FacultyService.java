@@ -39,7 +39,6 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-
     public Collection<Faculty> getByName(String name) {
         return facultyRepository.findAllByNameContainsIgnoreCase(name);
     }
@@ -51,5 +50,4 @@ public class FacultyService {
     public Collection<Student> getStudentsFromFaculty(Long id) {
         return facultyRepository.findById(id).map(Faculty::getStudents).orElseThrow(RuntimeException::new);
     }
-
 }
