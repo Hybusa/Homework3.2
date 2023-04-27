@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -76,16 +78,23 @@ class AvatarServiceTest {
     }
 
     /**
-     * Method under test: {@link AvatarService#findStudentAvatar(Long)}
+     * Method under test: {@link AvatarService#getAllAvatars(Integer, Integer)}
      */
     @Test
-    void findStudentAvatar_success() {
+    void testGetAllAvatars() {
 
-        when(avatarRepository.findByStudentId(anyLong())).thenReturn(Optional.of(testAvatar));
+        int pageNumber = 1;
+        int pageSize = 2;
 
-        avatarService.findStudentAvatar(anyLong());
+        PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
 
-        verify(avatarRepository).findByStudentId(anyLong());
+        Page<Avatar> avatarPage = Page.empty(pageRequest);
+
+        when(avatarRepository.findAll(pageRequest)).thenReturn(avatarPage);
+
+        avatarService.getAllAvatars(pageNumber,pageSize);
+
+        verify(avatarRepository).findAll(any(PageRequest.class));
     }
 }
 

@@ -4,30 +4,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repositories.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("students")
 public class StudentController {
 
     private final StudentService studentService;
+    private final StudentRepository studentRepository;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, StudentRepository studentRepository) {
         this.studentService = studentService;
+        this.studentRepository = studentRepository;
     }
 
-
-    @GetMapping("{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
-        return studentService.findStudent(id).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PostMapping
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.createStudent(student);
     }
 
-    @GetMapping("{id}/faculty")
-    public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.getFaculty(id));
+    @PutMapping
+    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @GetMapping
@@ -40,19 +42,35 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getAll());
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+        return studentService.findStudent(id).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("{id}/faculty")
+    public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getFaculty(id));
+    }
+
+
     @GetMapping("filter/{min}/{max}")
     public ResponseEntity<Collection<Student>> getAllFilteredByAge(@PathVariable int min, @PathVariable int max) {
         return ResponseEntity.ok(studentService.getAllByAgeBetween(min, max));
     }
 
-    @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    @GetMapping("amount")
+    public ResponseEntity<Integer> getAmountOfStudents(){
+        return ResponseEntity.ok().body(studentRepository.numberOfStudents());
     }
 
-    @PutMapping
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.editStudent(student));
+    @GetMapping("age/avarage")
+    public ResponseEntity<Integer> avarageStudentAge(){
+        return ResponseEntity.ok().body(studentRepository.avarageStudentAge());
+    }
+    @GetMapping("getLast")
+    public ResponseEntity<List<Student>> getLastFive(){
+        return ResponseEntity.ok(studentRepository.getLastFiveStudents());
     }
 
     @DeleteMapping("{id}")
