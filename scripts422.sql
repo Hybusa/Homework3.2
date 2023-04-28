@@ -17,5 +17,5 @@ FROM student JOIN faculty ON student.faculty_id = faculty.id;
 
 SELECT s.name
 FROM student s
-         LEFT JOIN avatar a ON a.student_id = s.id
+         JOIN avatar a ON a.student_id = s.id
 WHERE a.student_id IS NOT NULL;
