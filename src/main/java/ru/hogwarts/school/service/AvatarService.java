@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @Transactional
 public class AvatarService {
+    Logger logger = LoggerFactory.getLogger(AvatarService.class);
 
     @Value("${student.avatar.dir.path}")
     private String avatarDir;
@@ -29,6 +33,8 @@ public class AvatarService {
     private final AvatarRepository avatarRepository;
     private final ImageProcessor imageProcessor;
 
+
+
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository, ImageProcessor imageProcessor) {
         this.studentService = studentService;
         this.avatarRepository = avatarRepository;
@@ -36,6 +42,8 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long id, MultipartFile avatarFile) throws IOException {
+        logger.debug("Method uploadAvatar was invoked with a file {}", avatarFile.getName());
+
         Optional<Student> optStudent = studentService.findStudent(id);
         if(optStudent.isEmpty())
             throw new RuntimeException("Not Found");
@@ -68,10 +76,14 @@ public class AvatarService {
     }
 
     public Avatar findStudentAvatar(Long id) {
+        logger.debug("Method findStudentAvatar was invoked with parameters {}", id);
+
         return avatarRepository.findByStudentId(id).orElse(new Avatar());
     }
 
     public List<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
+        logger.debug("Method findStudentAvatar was invoked with parameters pageNumber: {}, pageSize: {}", pageNumber, pageSize);
+
         PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
     }
