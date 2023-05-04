@@ -42,11 +42,13 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long id, MultipartFile avatarFile) throws IOException {
-        logger.debug("Method uploadAvatar was invoked with a file {}", avatarFile.getName());
+        logger.info("Method uploadAvatar was invoked with a file {}", avatarFile.getName());
 
         Optional<Student> optStudent = studentService.findStudent(id);
-        if(optStudent.isEmpty())
+        if(optStudent.isEmpty()) {
+            logger.error("Not Found");
             throw new RuntimeException("Not Found");
+        }
         
         Student student = optStudent.get();
         String fileName = avatarFile.getOriginalFilename();
@@ -76,13 +78,13 @@ public class AvatarService {
     }
 
     public Avatar findStudentAvatar(Long id) {
-        logger.debug("Method findStudentAvatar was invoked with parameters {}", id);
+        logger.info("Method findStudentAvatar was invoked with parameters {}", id);
 
         return avatarRepository.findByStudentId(id).orElse(new Avatar());
     }
 
     public List<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
-        logger.debug("Method findStudentAvatar was invoked with parameters pageNumber: {}, pageSize: {}", pageNumber, pageSize);
+        logger.info("Method findStudentAvatar was invoked with parameters pageNumber: {}, pageSize: {}", pageNumber, pageSize);
 
         PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
