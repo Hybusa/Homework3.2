@@ -9,6 +9,7 @@ import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -31,17 +32,18 @@ public class StudentService {
 
     public Student editStudent(Student student) {
         logger.info("Method editStudent was invoked with parameters {}", student);
-        if(studentRepository.existsById(student.getId()))
+        if (studentRepository.existsById(student.getId()))
             return studentRepository.save(student);
         return null;
     }
-    public Collection<Student> getAllByName(String name){
+
+    public Collection<Student> getAllByName(String name) {
         logger.info("Method getAllByName was invoked with parameters {}", name);
         return studentRepository.findAllByNameContainsIgnoreCase(name);
     }
 
-    public Collection<Student> getAllByAgeBetween(int min, int max){
-        logger.info("Method getAllByAgeBetween was invoked with parameters min:{} , max:{}", min,max);
+    public Collection<Student> getAllByAgeBetween(int min, int max) {
+        logger.info("Method getAllByAgeBetween was invoked with parameters min:{} , max:{}", min, max);
         return studentRepository.findAllByAgeBetween(min, max);
     }
 
@@ -63,5 +65,23 @@ public class StudentService {
     public Faculty getFaculty(Long id) {
         logger.info("Method getFaculty was invoked with parameters {}", id);
         return studentRepository.findById(id).map(Student::getFaculty).orElseThrow(RuntimeException::new);
+    }
+
+    public Collection<String> getAllNamesStartingWith(String character) {
+       return studentRepository.findAll()
+               .parallelStream()
+               .map(Student::getName)
+               .filter(name -> name.startsWith(character))
+               .map(String::toUpperCase)
+               .sorted()
+               .collect(Collectors.toList());
+    }
+
+    public Double getAvarageAge() {
+        return  studentRepository.findAll()
+                .parallelStream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElseThrow(RuntimeException::new);
     }
 }

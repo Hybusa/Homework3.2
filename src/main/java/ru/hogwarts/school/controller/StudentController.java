@@ -53,7 +53,6 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getFaculty(id));
     }
 
-
     @GetMapping("filter/{min}/{max}")
     public ResponseEntity<Collection<Student>> getAllFilteredByAge(@PathVariable int min, @PathVariable int max) {
         return ResponseEntity.ok(studentService.getAllByAgeBetween(min, max));
@@ -71,6 +70,16 @@ public class StudentController {
     @GetMapping("getLast")
     public ResponseEntity<List<Student>> getLastFive(){
         return ResponseEntity.ok(studentRepository.getLastFiveStudents());
+    }
+
+    @GetMapping("getAllStartingWith")
+    public ResponseEntity<Collection<String>> getAllNamesStartingWithCharacter(@RequestParam("prefix") String prefix){
+        return  ResponseEntity.ok(studentService.getAllNamesStartingWith(prefix));
+    }
+
+    @GetMapping("getAvarageAge")
+    public ResponseEntity<Double> getAvarageAge(){
+        return ResponseEntity.ok(studentService.getAvarageAge());
     }
 
     @DeleteMapping("{id}")

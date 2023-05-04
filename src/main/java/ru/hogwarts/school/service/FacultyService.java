@@ -8,6 +8,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 
 @Service
@@ -60,5 +61,13 @@ public class FacultyService {
     public Collection<Student> getStudentsFromFaculty(Long id) {
         logger.info("Method getStudentsFromFaculty was invoked with parameters {}" , id);
         return facultyRepository.findById(id).map(Faculty::getStudents).orElseThrow(RuntimeException::new);
+    }
+
+    public String getLongestName() {
+        return facultyRepository.findAll()
+                .parallelStream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElseThrow(RuntimeException::new);
     }
 }

@@ -18,11 +18,24 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
+    @PostMapping
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.createFaculty(faculty);
+    }
+
+    @PutMapping
+    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok(facultyService.editFaculty(faculty));
+    }
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
         return facultyService.findFaculty(id).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
+    @GetMapping("getLongestName")
+    public ResponseEntity<String> getLongestName(){
+        return ResponseEntity.ok(facultyService.getLongestName());
     }
 
     @GetMapping("{id}/students")
@@ -43,16 +56,6 @@ public class FacultyController {
         if(color != null && !color.isBlank())
             return ResponseEntity.ok(facultyService.getByColor(color));
         return ResponseEntity.ok(facultyService.getAll());
-    }
-
-    @PostMapping
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
-    }
-
-    @PutMapping
-    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        return ResponseEntity.ok(facultyService.editFaculty(faculty));
     }
 
     @DeleteMapping("{id}")
