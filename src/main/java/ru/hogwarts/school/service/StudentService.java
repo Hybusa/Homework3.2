@@ -8,12 +8,13 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    Logger logger = LoggerFactory.getLogger(AvatarService.class);
+    private final Logger logger = LoggerFactory.getLogger(AvatarService.class);
     private final StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository) {
@@ -68,20 +69,78 @@ public class StudentService {
     }
 
     public Collection<String> getAllNamesStartingWith(String character) {
-       return studentRepository.findAll()
-               .parallelStream()
-               .map(Student::getName)
-               .filter(name -> name.startsWith(character))
-               .map(String::toUpperCase)
-               .sorted()
-               .collect(Collectors.toList());
+        return studentRepository.findAll()
+                .parallelStream()
+                .map(Student::getName)
+                .filter(name -> name.startsWith(character))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public Double getAvarageAge() {
-        return  studentRepository.findAll()
+        return studentRepository.findAll()
                 .parallelStream()
                 .mapToInt(Student::getAge)
                 .average()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public void printAllInThreads() {
+        List<Student> studentCollection = studentRepository.findAll();
+
+
+        System.out.println("Original order: ");
+        for (int i = 0; i < 6; i++) {
+            System.out.println(studentCollection.get(i));
+        }
+        System.out.println();
+
+        System.out.println("Main thread: " + studentCollection.get(0));
+        System.out.println("Main thread: " + studentCollection.get(1));
+
+        new Thread(() -> {
+            System.out.println("Thread 1: " + studentCollection.get(2));
+            System.out.println("Thread 1: " + studentCollection.get(3));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println("Thread 2: " + studentCollection.get(4));
+            System.out.println("Thread 2: " + studentCollection.get(5));
+        }).start();
+    }
+
+    public void printAllInSyncThreads() {
+
+        List<Student> studentCollection = studentRepository.findAll();
+
+        System.out.println("Original order: ");
+        for (int i = 0; i < 6; i++) {
+            System.out.println(studentCollection.get(i));
+        }
+        System.out.println();
+
+        printForSyncThreads("Main thread: ", studentCollection.get(0).toString());
+        printForSyncThreads("Main thread: ", studentCollection.get(1).toString());
+
+        new Thread(() -> {
+
+            printForSyncThreads("Thread 1: ", studentCollection.get(2).toString());
+            printForSyncThreads("Thread 1: ", studentCollection.get(3).toString());
+
+        }).start();
+
+        new Thread(() -> {
+
+            printForSyncThreads("Thread 2: ", studentCollection.get(4).toString());
+            printForSyncThreads("Thread 2: ", studentCollection.get(5).toString());
+
+        }).start();
+    }
+
+    private void printForSyncThreads(String string, String student) {
+        synchronized (this) {
+            System.out.println(string + student);
+        }
     }
 }

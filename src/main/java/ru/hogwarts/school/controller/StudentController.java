@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -81,6 +82,18 @@ public class StudentController {
     public ResponseEntity<Double> getAvarageAge(){
         return ResponseEntity.ok(studentService.getAvarageAge());
     }
+    @GetMapping("printInThreads")
+    @ResponseStatus(HttpStatus.OK)
+    public void printInThreads(){
+        studentService.printAllInThreads();
+    }
+    @GetMapping("printInSyncThreads")
+    @ResponseStatus(HttpStatus.OK)
+    public void printInSyncThreads(){
+        studentService.printAllInSyncThreads();
+    }
+
+
 
     @DeleteMapping("{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
