@@ -68,6 +68,6 @@ public class FacultyService {
                 .parallelStream()
                 .map(Faculty::getName)
                 .max(Comparator.comparing(String::length))
-                .orElseThrow(RuntimeException::new);
+                .orElse("No faculty.");
     }
 }

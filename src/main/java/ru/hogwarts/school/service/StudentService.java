@@ -83,7 +83,7 @@ public class StudentService {
                 .parallelStream()
                 .mapToInt(Student::getAge)
                 .average()
-                .orElseThrow(RuntimeException::new);
+                .orElse(0);
     }
 
     public void printAllInThreads() {
